@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Login — Kwetu Identity Control{% endblock %}
+
+{% block content %}
+    <div style="display:flex; justify-content:center; margin-top:80px;">
+        <div class="card" style="max-width:360px; width:100%;">
+            <h2 class="section-title">Sign in</h2>
+
+            {% if error %}
+                <p style="color:#f87171; margin-bottom:12px;">
+                    {{ error }}
+                </p>
+            {% endif %}
+
+            <form method="post">
+                <div style="margin-bottom:12px;">
+                    <label>Username</label><br>
+                    <input type="text" name="username" required>
+                </div>
+
+                <div style="margin-bottom:16px;">
+                    <label>Password</label><br>
+                    <input type="password" name="password" required>
+                </div>
+
+                <button type="submit" style="width:100%;">Login</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

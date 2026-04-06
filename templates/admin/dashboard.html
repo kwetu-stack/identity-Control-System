@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard — Kwetu Identity Control{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <h2 class="section-title">Admin Dashboard</h2>
+
+        <p>System status: <strong>Operational</strong></p>
+
+        <h3>Student Management</h3>
+        <ul>
+            <li><a href="/admin/students">View Students</a></li>
+            <li><a href="/admin/students/add">Add Student</a></li>
+        </ul>
+
+        <h3>System</h3>
+        <ul>
+            <li>Manage Users (coming soon)</li>
+            <li>Manage Guards (coming soon)</li>
+            <li>Manage Devices (coming soon)</li>
+            <li>Audit Logs (coming soon)</li>
+        </ul>
+    </div>
+{% endblock %}

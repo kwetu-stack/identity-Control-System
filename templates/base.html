@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>{% block title %}Kwetu Identity Control{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/kwetu.css') }}">
+</head>
+<body>
+{% if is_demo() %}
+<div style="background:#f59e0b;color:#000;padding:8px;text-align:center;font-weight:700;">
+  Demo Mode - Changes will not be saved
+</div>
+{% endif %}
+<header>
+    <h1>Kwetu Identity Control</h1>
+
+ <nav>
+    {% if is_demo() or current_user.role == 'guard' %}
+        <a href="{{ url_for('guard_dashboard') }}">Guard Dashboard</a>
+        <a href="{{ url_for('guard_verify_student') }}">Verify Student</a>
+    {% endif %}
+
+    {% if is_demo() or current_user.role == 'admin' %}
+        <a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
+        <a href="{{ url_for('list_students') }}">Students</a>
+        <a href="{{ url_for('add_student') }}">Add Student</a>
+    {% endif %}
+
+    {% if is_demo() or current_user.role == 'management' %}
+        <a href="{{ url_for('management_dashboard') }}">Management Dashboard</a>
+        <a href="{{ url_for('management_entry_logs') }}">Entry Logs</a>
+        <a href="{{ url_for('export_entry_logs_csv') }}">Export CSV</a>
+    {% endif %}
+
+    <a href="{{ url_for('logout') }}">Logout</a>
+</nav>
+
+
+    <p>
+        Logged in as: {{ current_user.username }} ({{ current_user.role }})
+    </p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <p style="padding:10px;background:#fef3c7;color:#78350f;border:1px solid #f59e0b;">
+                    {{ message }}
+                </p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <hr>
+</header>
+
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

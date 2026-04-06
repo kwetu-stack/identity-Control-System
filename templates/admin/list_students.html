@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Students — Admin{% endblock %}
+
+{% block content %}
+    <h2>Registered Students</h2>
+
+    {% if students %}
+        <table border="1" cellpadding="6" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Registration Number</th>
+                    <th>Full Name</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student.registration_number }}</td>
+                    <td>{{ student.full_name }}</td>
+                    <td>
+                        {% if student.is_active %}
+                            Active
+                        {% else %}
+                            Inactive
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No students registered yet.</p>
+    {% endif %}
+
+    <p style="margin-top:20px;">
+        <a href="/admin/students/add">+ Add Student</a> |
+        <a href="/admin">← Back to Dashboard</a>
+    </p>
+{% endblock %}

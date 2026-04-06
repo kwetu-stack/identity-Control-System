@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Student Entry History{% endblock %}
+
+{% block content %}
+<h2>Student Entry History</h2>
+
+<p>
+    <strong>Name:</strong> {{ student.full_name }}<br>
+    <strong>Registration Number:</strong> {{ student.registration_number }}
+</p>
+
+<table border="1" cellpadding="6" cellspacing="0">
+    <tr>
+        <th>Date / Time (UTC)</th>
+        <th>Result</th>
+        <th>Reason</th>
+        <th>Guard ID</th>
+    </tr>
+
+    {% for log in logs %}
+    <tr>
+        <td>{{ log.created_at.strftime("%d %b %Y, %H:%M:%S") }}</td>
+        <td>{{ log.result }}</td>
+        <td>{{ log.reason }}</td>
+        <td>{{ log.guard_id }}</td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="4">No entry records for this student.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+<a href="/management/entry-logs">← Back to Entry Logs</a>
+{% endblock %}

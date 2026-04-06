@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Management Dashboard — Kwetu Identity Control{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <h2 class="section-title">Management Dashboard</h2>
+
+        <p><strong>Overview:</strong> Hostel access monitoring</p>
+
+        <ul>
+            <li>
+                Total registered students:
+                <strong>{{ total_students }}</strong>
+            </li>
+            <li>
+                Entries today:
+                <strong>{{ entries_today }}</strong>
+            </li>
+            <li>
+                Allowed entries today:
+                <strong>{{ allowed_today }}</strong>
+            </li>
+            <li>
+                Denied entries today:
+                <strong>{{ denied_today }}</strong>
+            </li>
+        </ul>
+
+        <hr>
+
+        <h3>Access Monitoring</h3>
+        <ul>
+            <li>
+                <a href="{{ url_for('management_entry_logs') }}">
+                    View all entry logs (read-only)
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('list_students') }}">
+                    View students → entry history
+                </a>
+            </li>
+        </ul>
+
+        <hr>
+
+        <h3>Reports (Coming Soon)</h3>
+        <ul>
+            <li>Daily access report</li>
+            <li>Incident log</li>
+            <li>Guard activity summary</li>
+        </ul>
+    </div>
+{% endblock %}

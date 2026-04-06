@@ -1,0 +1,102 @@
+/* Kwetu Base Theme */
+
+:root {
+    --bg-main: #0b1220;
+    --bg-surface: #0f1b2d;
+    --bg-topbar-start: #0f172a;
+    --bg-topbar-end: #1e293b;
+    --accent: #22d3ee;
+    --accent-soft: #38bdf8;
+    --text-main: #e5e7eb;
+    --text-muted: #94a3b8;
+    --border-subtle: #1f2937;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+}
+
+header {
+    background: linear-gradient(
+        to right,
+        var(--bg-topbar-start),
+        var(--bg-topbar-end)
+    );
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+header h1 {
+    margin: 0 0 8px 0;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+nav a {
+    color: var(--text-main);
+    text-decoration: none;
+    margin-right: 16px;
+    font-weight: 500;
+}
+
+nav a:hover {
+    color: var(--accent);
+}
+
+main {
+    padding: 24px;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid var(--border-subtle);
+    margin: 16px 0;
+}
+
+button {
+    background-color: var(--accent);
+    color: #020617;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--accent-soft);
+}
+
+input {
+    background-color: var(--bg-surface);
+    color: var(--text-main);
+    border: 1px solid var(--border-subtle);
+    padding: 8px;
+    border-radius: 8px;
+}
+/* Page surfaces */
+
+.card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 20px 24px;
+    max-width: 900px;
+}
+
+.card + .card {
+    margin-top: 24px;
+}
+
+.section-title {
+    margin-top: 0;
+    font-size: 18px;
+    font-weight: 600;
+}

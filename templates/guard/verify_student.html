@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Verify Student — Guard{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <h2 class="section-title">Student Verification</h2>
+
+        <!-- Manual verification (Phase 1 – unchanged) -->
+        <form method="post">
+            <div>
+                <label>Registration Number</label><br>
+                <input type="text" name="registration_number" autofocus>
+            </div>
+
+            <br>
+            <button type="submit">Verify</button>
+        </form>
+
+        <hr>
+
+        <!-- QR token verification (Phase 2 – assisted) -->
+        <form method="post" action="{{ url_for('verify_qr') }}">
+            <div>
+                <label>QR Token</label><br>
+                <input
+                    type="text"
+                    name="qr_token"
+                    placeholder="Scan / paste QR token"
+                >
+            </div>
+
+            <br>
+            <button type="submit">Verify via QR</button>
+        </form>
+
+        {% if message %}
+            <p style="margin-top:15px;">
+                <strong>{{ message }}</strong>
+            </p>
+        {% endif %}
+
+        {% if student %}
+            <hr>
+            <h3>Student Details</h3>
+
+            <p><strong>Name:</strong> {{ student.full_name }}</p>
+            <p><strong>Registration Number:</strong> {{ student.registration_number }}</p>
+            <p>
+                <strong>Status:</strong>
+                {% if student.is_active %}Active{% else %}Inactive{% endif %}
+            </p>
+
+            {% if last_entry %}
+                <p>
+                    <strong>Last Entry Time:</strong>
+                    {{ last_entry.created_at.strftime("%d %b %Y, %H:%M:%S") }}
+                </p>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}

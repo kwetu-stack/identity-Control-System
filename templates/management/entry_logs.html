@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Entry Logs — Management{% endblock %}
+
+{% block content %}
+<h2>Entry Logs (Read-Only)</h2>
+
+<p>Latest access activity recorded by guards.</p>
+<p>
+    <a href="{{ url_for('export_entry_logs_csv') }}">
+        Download CSV
+    </a>
+</p>
+
+
+<table border="1" cellpadding="6" cellspacing="0">
+    <tr>
+        <th>Date / Time (UTC)</th>
+        <th>Student</th>
+        <th>Registration No.</th>
+        <th>Result</th>
+        <th>Reason</th>
+        <th>Guard ID</th>
+    </tr>
+
+    {% for log in logs %}
+    <tr>
+        <td>{{ log.created_at.strftime("%d %b %Y, %H:%M:%S") }}</td>
+
+     <td>
+    {% if log.student %}
+        {{ log.student.full_name }}
+        <br>
+        <a href="{{ url_for('management_student_entries', student_id=log.student.id) }}">
+            View history
+        </a>
+    {% else %}
+        —
+    {% endif %}
+     </td>
+
+        <td>
+            {% if log.student %}
+                {{ log.student.registration_number }}
+            {% else %}
+                —
+            {% endif %}
+        </td>
+
+        <td>{{ log.result }}</td>
+        <td>{{ log.reason }}</td>
+        <td>{{ log.guard_id }}</td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="6">No entry logs available.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+<a href="/management">← Back to Dashboard</a>
+{% endblock %}

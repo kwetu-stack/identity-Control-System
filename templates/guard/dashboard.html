@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Guard Dashboard — Kwetu Identity Control{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <h2 class="section-title">Guard Dashboard</h2>
+
+        <p><strong>Gate Status:</strong> Active</p>
+
+        <div style="margin-top:20px;">
+            <h3>Identity Verification</h3>
+            <p>Scan or verify student identity.</p>
+
+            <button disabled>Scan ID (coming soon)</button>
+            <button disabled>Manual Lookup (coming soon)</button>
+        </div>
+
+        <div style="margin-top:20px;">
+            <p>Last action: <em>No activity yet</em></p>
+        </div>
+    </div>
+{% endblock %}

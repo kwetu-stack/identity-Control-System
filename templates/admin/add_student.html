@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Add Student — Admin{% endblock %}
+
+{% block content %}
+    <h2>Add Student</h2>
+
+    {% if error %}
+        <p style="color:red;">{{ error }}</p>
+    {% endif %}
+
+    {% if success %}
+        <p style="color:green;">{{ success }}</p>
+    {% endif %}
+
+    <form method="post">
+        <div>
+            <label>Registration Number</label><br>
+            <input type="text" name="registration_number" required>
+        </div>
+
+        <div>
+            <label>Full Name</label><br>
+            <input type="text" name="full_name" required>
+        </div>
+
+        <button type="submit">Add Student</button>
+    </form>
+
+    <p style="margin-top:20px;">
+        <a href="/admin">← Back to Dashboard</a>
+    </p>
+{% endblock %}
