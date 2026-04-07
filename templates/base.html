@@ -2,59 +2,119 @@
 <html lang="en">
 <head>
   <title>{% block title %}Kwetu Identity Control{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/kwetu.css') }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
 </head>
-<body>
+<body class="text-light">
 {% if is_demo() %}
-<div style="background:#f59e0b;color:#000;padding:8px;text-align:center;font-weight:700;">
-  Demo Mode - Changes will not be saved
+<div class="demo-banner" style="background:#f59e0b;color:#000;padding:8px;text-align:center;font-weight:700;">
+  Demo Mode — Changes will not be saved.
+  <span style="font-weight:600;">View as:</span>
+  <a href="{{ url_for('demo_switch_role', role='guard') }}" style="color:#111;text-decoration:underline;margin-left:6px;">Guard</a>
+  <a href="{{ url_for('demo_switch_role', role='management') }}" style="color:#111;text-decoration:underline;margin-left:6px;">Management</a>
+  <a href="{{ url_for('demo_switch_role', role='admin') }}" style="color:#111;text-decoration:underline;margin-left:6px;">Admin</a>
 </div>
 {% endif %}
-<header>
-    <h1>Kwetu Identity Control</h1>
 
- <nav>
-    {% if is_demo() or current_user.role == 'guard' %}
-        <a href="{{ url_for('guard_dashboard') }}">Guard Dashboard</a>
-        <a href="{{ url_for('guard_verify_student') }}">Verify Student</a>
-    {% endif %}
+{% set ep = request.endpoint or '' %}
 
-    {% if is_demo() or current_user.role == 'admin' %}
-        <a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
-        <a href="{{ url_for('list_students') }}">Students</a>
-        <a href="{{ url_for('add_student') }}">Add Student</a>
-    {% endif %}
+<!-- Mobile sidebar (offcanvas) -->
+<div class="offcanvas offcanvas-start sidebar-offcanvas text-bg-dark" tabindex="-1" id="mobileSidebar" aria-labelledby="mobileSidebarLabel">
+  <div class="offcanvas-header">
+    <div class="d-flex align-items-center gap-2">
+      <div class="brand" id="mobileSidebarLabel">Kwetu Identity Control</div>
+      <span class="badge badge-soft text-uppercase">{{ current_user.role }}</span>
+    </div>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="nav flex-column">
+      {% if current_user.role == 'guard' %}
+        <a class="nav-link {% if ep == 'guard_dashboard' %}active{% endif %}" href="{{ url_for('guard_dashboard') }}">Dashboard</a>
+        <a class="nav-link {% if ep in ['guard_verify_student', 'verify_qr'] %}active{% endif %}" href="{{ url_for('guard_verify_student') }}">Verify student</a>
+      {% elif current_user.role == 'management' %}
+        <a class="nav-link {% if ep == 'management_dashboard' %}active{% endif %}" href="{{ url_for('management_dashboard') }}">Dashboard</a>
+        <a class="nav-link {% if ep == 'management_entry_logs' %}active{% endif %}" href="{{ url_for('management_entry_logs') }}">Entry logs</a>
+        <a class="nav-link" href="{{ url_for('export_entry_logs_csv') }}">Export CSV</a>
+      {% elif current_user.role == 'admin' %}
+        <a class="nav-link {% if ep == 'admin_dashboard' %}active{% endif %}" href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+        <a class="nav-link {% if ep in ['list_students','add_student'] %}active{% endif %}" href="{{ url_for('list_students') }}">Students</a>
+        <a class="nav-link {% if ep == 'assign_qr_tokens' %}active{% endif %}" href="{{ url_for('assign_qr_tokens') }}">Assign QR tokens</a>
+      {% endif %}
+    </div>
 
-    {% if is_demo() or current_user.role == 'management' %}
-        <a href="{{ url_for('management_dashboard') }}">Management Dashboard</a>
-        <a href="{{ url_for('management_entry_logs') }}">Entry Logs</a>
-        <a href="{{ url_for('export_entry_logs_csv') }}">Export CSV</a>
-    {% endif %}
+    <hr class="text-secondary">
 
-    <a href="{{ url_for('logout') }}">Logout</a>
-</nav>
+    <div class="small text-secondary mb-2">
+      Signed in as <span class="text-light">{{ current_user.username }}</span>
+    </div>
 
+    <a class="btn btn-outline-light w-100" href="{{ url_for('logout') }}">Logout</a>
+  </div>
+</div>
 
-    <p>
-        Logged in as: {{ current_user.username }} ({{ current_user.role }})
-    </p>
+<div class="container-fluid app-shell">
+  <div class="row">
+    <aside class="d-none d-lg-block col-lg-2 p-3 sidebar">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <div class="brand">Kwetu Identity Control</div>
+        <span class="badge badge-soft text-uppercase">{{ current_user.role }}</span>
+      </div>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <p style="padding:10px;background:#fef3c7;color:#78350f;border:1px solid #f59e0b;">
-                    {{ message }}
-                </p>
-            {% endfor %}
+      <div class="nav flex-column">
+        {% if current_user.role == 'guard' %}
+          <a class="nav-link {% if ep == 'guard_dashboard' %}active{% endif %}" href="{{ url_for('guard_dashboard') }}">Dashboard</a>
+          <a class="nav-link {% if ep in ['guard_verify_student', 'verify_qr'] %}active{% endif %}" href="{{ url_for('guard_verify_student') }}">Verify student</a>
+        {% elif current_user.role == 'management' %}
+          <a class="nav-link {% if ep == 'management_dashboard' %}active{% endif %}" href="{{ url_for('management_dashboard') }}">Dashboard</a>
+          <a class="nav-link {% if ep == 'management_entry_logs' %}active{% endif %}" href="{{ url_for('management_entry_logs') }}">Entry logs</a>
+          <a class="nav-link" href="{{ url_for('export_entry_logs_csv') }}">Export CSV</a>
+        {% elif current_user.role == 'admin' %}
+          <a class="nav-link {% if ep == 'admin_dashboard' %}active{% endif %}" href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+          <a class="nav-link {% if ep in ['list_students','add_student'] %}active{% endif %}" href="{{ url_for('list_students') }}">Students</a>
+          <a class="nav-link {% if ep == 'assign_qr_tokens' %}active{% endif %}" href="{{ url_for('assign_qr_tokens') }}">Assign QR tokens</a>
         {% endif %}
-    {% endwith %}
+      </div>
 
-    <hr>
-</header>
+      <hr class="text-secondary">
 
+      <div class="small text-secondary mb-2">
+        Signed in as <span class="text-light">{{ current_user.username }}</span>
+      </div>
 
-    <main>
+      <a class="btn btn-outline-light w-100" href="{{ url_for('logout') }}">Logout</a>
+    </aside>
+
+    <div class="col-12 col-lg-10 p-0">
+      <div class="topbar px-3 px-lg-4 py-3 d-flex align-items-center justify-content-between gap-2">
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-outline-light btn-sm d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar" aria-controls="mobileSidebar">
+            Menu
+          </button>
+          <div class="fw-semibold">{% block page_title %}{% endblock %}</div>
+        </div>
+        <div class="text-secondary small d-none d-md-block">University Identity Access Control</div>
+      </div>
+
+      <main class="p-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-warning surface mb-3" role="alert">
+                <div class="fw-semibold">Notice</div>
+                <div>{{ message }}</div>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
         {% block content %}{% endblock %}
-    </main>
+      </main>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

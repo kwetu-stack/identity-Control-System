@@ -2,22 +2,82 @@
 
 {% block title %}Guard Dashboard — Kwetu Identity Control{% endblock %}
 
+{% block page_title %}Guard dashboard{% endblock %}
+
 {% block content %}
-    <div class="card">
-        <h2 class="section-title">Guard Dashboard</h2>
+  <div class="row g-3">
+    <div class="col-12 col-lg-5">
+      <div class="surface p-4">
+        <div class="h4 mb-1">Quick verify</div>
+        <div class="text-secondary mb-3">Enter a registration number or scan a QR token.</div>
 
-        <p><strong>Gate Status:</strong> Active</p>
-
-        <div style="margin-top:20px;">
-            <h3>Identity Verification</h3>
-            <p>Scan or verify student identity.</p>
-
-            <button disabled>Scan ID (coming soon)</button>
-            <button disabled>Manual Lookup (coming soon)</button>
+        <div class="d-flex gap-2 flex-wrap">
+          <a class="btn btn-info fw-semibold" href="{{ url_for('guard_verify_student') }}">Open verification</a>
+          <span class="badge badge-soft align-self-center">Gate: Main gate</span>
         </div>
+      </div>
 
-        <div style="margin-top:20px;">
-            <p>Last action: <em>No activity yet</em></p>
+      <div class="surface p-4 mt-3">
+        <div class="h5 mb-2">Shift status</div>
+        <div class="d-flex justify-content-between">
+          <div class="text-secondary">Gate status</div>
+          <div class="fw-semibold">Active</div>
         </div>
+        <div class="d-flex justify-content-between mt-2">
+          <div class="text-secondary">Policy</div>
+          <div class="fw-semibold">Re-entry lock enabled</div>
+        </div>
+      </div>
     </div>
+
+    <div class="col-12 col-lg-7">
+      <div class="surface p-4">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <div class="h4 mb-0">Recent activity</div>
+          <a class="btn btn-sm btn-outline-light" href="{{ url_for('management_entry_logs') }}">View all logs</a>
+        </div>
+        <div class="text-secondary mb-3">Latest verifications recorded.</div>
+
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Time (UTC)</th>
+                <th>Student</th>
+                <th>Result</th>
+                <th>Reason</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for log in logs %}
+                <tr>
+                  <td class="text-secondary">{{ log.created_at.strftime("%d %b, %H:%M") }}</td>
+                  <td>
+                    {% if log.student %}
+                      <div class="fw-semibold">{{ log.student.full_name }}</div>
+                      <div class="text-secondary small">{{ log.student.registration_number }}</div>
+                    {% else %}
+                      <span class="text-secondary">—</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if log.result == 'allowed' %}
+                      <span class="badge text-bg-success">Allowed</span>
+                    {% else %}
+                      <span class="badge text-bg-danger">Denied</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-secondary">{{ log.reason }}</td>
+                </tr>
+              {% else %}
+                <tr>
+                  <td colspan="4" class="text-secondary">No activity yet.</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}

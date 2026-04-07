@@ -2,62 +2,66 @@
 
 {% block title %}Entry Logs — Management{% endblock %}
 
+{% block page_title %}Entry logs{% endblock %}
+
 {% block content %}
-<h2>Entry Logs (Read-Only)</h2>
+  <div class="surface p-4">
+    <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between mb-3">
+      <div>
+        <div class="h4 mb-1">Entry logs</div>
+        <div class="text-secondary">Latest access activity recorded by guards.</div>
+      </div>
+      <a class="btn btn-info fw-semibold" href="{{ url_for('export_entry_logs_csv') }}">Download CSV</a>
+    </div>
 
-<p>Latest access activity recorded by guards.</p>
-<p>
-    <a href="{{ url_for('export_entry_logs_csv') }}">
-        Download CSV
-    </a>
-</p>
-
-
-<table border="1" cellpadding="6" cellspacing="0">
-    <tr>
-        <th>Date / Time (UTC)</th>
-        <th>Student</th>
-        <th>Registration No.</th>
-        <th>Result</th>
-        <th>Reason</th>
-        <th>Guard ID</th>
-    </tr>
-
-    {% for log in logs %}
-    <tr>
-        <td>{{ log.created_at.strftime("%d %b %Y, %H:%M:%S") }}</td>
-
-     <td>
-    {% if log.student %}
-        {{ log.student.full_name }}
-        <br>
-        <a href="{{ url_for('management_student_entries', student_id=log.student.id) }}">
-            View history
-        </a>
-    {% else %}
-        —
-    {% endif %}
-     </td>
-
-        <td>
-            {% if log.student %}
-                {{ log.student.registration_number }}
-            {% else %}
-                —
-            {% endif %}
-        </td>
-
-        <td>{{ log.result }}</td>
-        <td>{{ log.reason }}</td>
-        <td>{{ log.guard_id }}</td>
-    </tr>
-    {% else %}
-    <tr>
-        <td colspan="6">No entry logs available.</td>
-    </tr>
-    {% endfor %}
-</table>
-
-<br>
-<a href="/management">← Back to Dashboard</a>
+    <div class="table-responsive">
+      <table class="table table-dark table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Date / time (UTC)</th>
+            <th>Student</th>
+            <th>Registration No.</th>
+            <th>Result</th>
+            <th>Reason</th>
+            <th>Guard</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in logs %}
+            <tr>
+              <td class="text-secondary">{{ log.created_at.strftime("%d %b %Y, %H:%M:%S") }}</td>
+              <td>
+                {% if log.student %}
+                  <div class="fw-semibold">{{ log.student.full_name }}</div>
+                  <a class="small" href="{{ url_for('management_student_entries', student_id=log.student.id) }}">View history</a>
+                {% else %}
+                  <span class="text-secondary">—</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if log.student %}
+                  {{ log.student.registration_number }}
+                {% else %}
+                  <span class="text-secondary">—</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if log.result == 'allowed' %}
+                  <span class="badge text-bg-success">Allowed</span>
+                {% else %}
+                  <span class="badge text-bg-danger">Denied</span>
+                {% endif %}
+              </td>
+              <td class="text-secondary">{{ log.reason }}</td>
+              <td class="text-secondary">#{{ log.guard_id }}</td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="6" class="text-secondary">No entry logs available.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 {% endblock %}

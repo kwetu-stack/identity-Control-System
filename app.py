@@ -1,5 +1,5 @@
 import os
-from flask import Flask, Response, flash, redirect, render_template, request, url_for
+from flask import Flask, Response, flash, redirect, render_template, request, session, url_for
 from flask_login import (
     LoginManager, login_required, login_user, logout_user, current_user
 )
@@ -7,7 +7,7 @@ import csv
 from io import StringIO
 from config.settings import DevelopmentConfig
 from models.user import User
-from core.security import ROLE_ADMIN, ROLE_GUARD, ROLE_MANAGEMENT
+from core.security import ALL_ROLES, ROLE_ADMIN, ROLE_GUARD, ROLE_MANAGEMENT
 from werkzeug.security import check_password_hash
 from core.db import db
 from core.security import role_required
@@ -15,6 +15,7 @@ from models.student import Student
 from models.entry_log import EntryLog
 from datetime import datetime, timedelta, timezone, date
 from config.settings import MIN_REENTRY_MINUTES
+from sqlalchemy import or_
 
 
 DEMO_MODE = os.getenv("DEMO_MODE", "true").lower() == "true"
@@ -29,15 +30,21 @@ login_manager.login_view = "login"
 
 
 def get_demo_user():
+    demo_role = session.get("demo_role", ROLE_ADMIN)
+    if demo_role not in ALL_ROLES:
+        demo_role = ROLE_ADMIN
+
     demo_user = User.query.order_by(User.id.asc()).first()
     if demo_user:
+        # In demo mode we allow "view as role" without persisting it.
+        demo_user.role = demo_role
         return demo_user
 
     return User(
         id=1,
         username="demo",
         password_hash="",
-        role=ROLE_ADMIN,
+        role=demo_role,
         active=True
     )
 
@@ -93,6 +100,9 @@ def create_app():
 
         if not current_user.is_authenticated:
             login_user(get_demo_user())
+        else:
+            # Keep demo role changes reflected for the current request.
+            current_user.role = session.get("demo_role", getattr(current_user, "role", ROLE_ADMIN))
 
         route_hint = f"{request.endpoint or ''} {request.path}".lower()
         if "delete" in route_hint or "remove" in route_hint:
@@ -108,6 +118,26 @@ def create_app():
             return redirect(request.referrer or url_for("post_login"))
 
         return None
+
+    @app.route("/demo/switch-role/<role>")
+    @login_required
+    def demo_switch_role(role: str):
+        """
+        Demo-only helper: switch the current demo user's "view as" role.
+        This does not modify the DB; it only stores role in the session.
+        """
+        if not is_demo():
+            return redirect(url_for("post_login"))
+
+        role = (role or "").strip().lower()
+        if role not in ALL_ROLES:
+            flash("Unknown role.", "warning")
+            return redirect(request.referrer or url_for("post_login"))
+
+        session["demo_role"] = role
+        login_user(get_demo_user())
+        flash(f"Demo Mode: viewing as {role}.", "info")
+        return redirect(url_for("post_login"))
 
     def process_verification_result(student, result, reason):
         """Helper function to log and return verification result."""
@@ -247,7 +277,13 @@ def create_app():
     @login_required
     @role_required(ROLE_GUARD)
     def guard_dashboard():
-        return render_template("guard/dashboard.html")
+        logs = (
+            EntryLog.query
+            .order_by(EntryLog.created_at.desc())
+            .limit(12)
+            .all()
+        )
+        return render_template("guard/dashboard.html", logs=logs)
 
     @app.route("/guard/verify", methods=["GET", "POST"])
     @login_required
@@ -437,7 +473,17 @@ def create_app():
     @login_required
     @role_required(ROLE_ADMIN)
     def list_students():
-        students = Student.query.order_by(Student.full_name.asc()).all()
+        q = (request.args.get("q") or "").strip()
+        query = Student.query
+        if q:
+            like = f"%{q}%"
+            query = query.filter(
+                or_(
+                    Student.full_name.ilike(like),
+                    Student.registration_number.ilike(like),
+                )
+            )
+        students = query.order_by(Student.full_name.asc()).limit(300).all()
         return render_template(
             "admin/list_students.html",
             students=students

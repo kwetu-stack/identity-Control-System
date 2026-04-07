@@ -1,0 +1,131 @@
+/* Kwetu Partners brand theme (matches kwetupartners.net/style.css) */
+
+:root {
+  /* Brand palette */
+  --kwetu-nav-start: #0f172a;
+  --kwetu-nav-end: #1e293b;
+  --kwetu-accent-1: #22d3ee;
+  --kwetu-accent-2: #38bdf8;
+  --kwetu-bg: #0b1220;
+  --kwetu-surface: #0f1b2d;
+  --kwetu-border-solid: #1f2937;
+  --kwetu-text: #E2E8F0;
+  --kwetu-muted: #94A3B8;
+  --kwetu-border: rgba(148, 163, 184, 0.18);
+
+  /* Bootstrap overrides */
+  --bs-body-bg: var(--kwetu-bg);
+  --bs-body-color: var(--kwetu-text);
+  --bs-secondary-color: var(--kwetu-muted);
+  --bs-border-color: rgba(148, 163, 184, 0.18);
+  --bs-link-color: var(--kwetu-accent-2);
+  --bs-link-hover-color: var(--kwetu-accent-1);
+  --bs-info: var(--kwetu-accent-1);
+  --bs-primary: var(--kwetu-accent-2);
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background: var(--kwetu-bg);
+}
+
+.app-shell {
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: linear-gradient(180deg, var(--kwetu-nav-start) 0%, var(--kwetu-bg) 100%);
+  border-right: 1px solid var(--kwetu-border);
+}
+
+.sidebar-offcanvas {
+  background: linear-gradient(180deg, var(--kwetu-nav-start) 0%, var(--kwetu-bg) 100%);
+}
+
+.sidebar .brand {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.sidebar .nav-link {
+  color: rgba(226, 232, 240, 0.9);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+}
+
+.sidebar .nav-link:hover {
+  background: rgba(34, 211, 238, 0.10);
+  color: #e2e8f0;
+}
+
+.sidebar .nav-link.active {
+  background: rgba(34, 211, 238, 0.18);
+  border: 1px solid rgba(34, 211, 238, 0.25);
+}
+
+.topbar {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--kwetu-border);
+}
+
+.surface {
+  background: rgba(15, 27, 45, 0.92);
+  border: 1px solid var(--kwetu-border);
+  border-radius: 18px;
+}
+
+.btn-info {
+  --bs-btn-color: #06121a;
+  --bs-btn-border-color: transparent;
+  --bs-btn-bg: var(--kwetu-accent-1);
+  --bs-btn-hover-bg: var(--kwetu-accent-2);
+  --bs-btn-hover-border-color: transparent;
+  --bs-btn-active-bg: var(--kwetu-accent-2);
+  --bs-btn-active-border-color: transparent;
+}
+
+.btn-outline-info {
+  --bs-btn-color: var(--kwetu-text);
+  --bs-btn-border-color: rgba(56, 189, 248, 0.22);
+  --bs-btn-hover-bg: rgba(34, 211, 238, 0.12);
+  --bs-btn-hover-border-color: rgba(34, 211, 238, 0.28);
+  --bs-btn-hover-color: var(--kwetu-text);
+}
+
+.btn-outline-light {
+  --bs-btn-border-color: rgba(226, 232, 240, 0.22);
+  --bs-btn-hover-bg: rgba(226, 232, 240, 0.10);
+}
+
+.table-dark {
+  --bs-table-bg: rgba(15, 27, 45, 0.92);
+  --bs-table-striped-bg: rgba(255, 255, 255, 0.02);
+  --bs-table-hover-bg: rgba(34, 211, 238, 0.06);
+  --bs-table-border-color: rgba(148, 163, 184, 0.18);
+  --bs-table-color: rgba(226, 232, 240, 0.92);
+}
+
+.table thead th {
+  color: rgba(226, 232, 240, 0.9);
+}
+
+.table tbody td {
+  color: rgba(226, 232, 240, 0.9);
+}
+
+.badge-soft {
+  border: 1px solid rgba(148, 163, 184, 0.30);
+  background: rgba(148, 163, 184, 0.12);
+  color: rgba(226, 232, 240, 0.95);
+}
+
+.demo-banner a {
+  color: #111;
+  text-decoration: underline;
+}
+

@@ -2,40 +2,59 @@
 
 {% block title %}Students — Admin{% endblock %}
 
+{% block page_title %}Students{% endblock %}
+
 {% block content %}
-    <h2>Registered Students</h2>
+  <div class="surface p-4">
+    <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between mb-3">
+      <div>
+        <div class="h4 mb-1">Student directory</div>
+        <div class="text-secondary">Search and manage student access status.</div>
+      </div>
 
-    {% if students %}
-        <table border="1" cellpadding="6" cellspacing="0">
-            <thead>
-                <tr>
-                    <th>Registration Number</th>
-                    <th>Full Name</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for student in students %}
-                <tr>
-                    <td>{{ student.registration_number }}</td>
-                    <td>{{ student.full_name }}</td>
-                    <td>
-                        {% if student.is_active %}
-                            Active
-                        {% else %}
-                            Inactive
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No students registered yet.</p>
-    {% endif %}
+      <div class="d-flex gap-2">
+        <a class="btn btn-outline-info" href="{{ url_for('add_student') }}">Add student</a>
+      </div>
+    </div>
 
-    <p style="margin-top:20px;">
-        <a href="/admin/students/add">+ Add Student</a> |
-        <a href="/admin">← Back to Dashboard</a>
-    </p>
+    <form class="row g-2 mb-3" method="get">
+      <div class="col-12 col-md-8">
+        <input class="form-control" type="text" name="q" value="{{ request.args.get('q','') }}" placeholder="Search by name or registration number">
+      </div>
+      <div class="col-12 col-md-4 d-grid">
+        <button class="btn btn-info fw-semibold" type="submit">Search</button>
+      </div>
+    </form>
+
+    <div class="table-responsive">
+      <table class="table table-dark table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Registration No.</th>
+            <th>Full name</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student in students %}
+            <tr>
+              <td class="fw-semibold">{{ student.registration_number }}</td>
+              <td>{{ student.full_name }}</td>
+              <td>
+                {% if student.is_active %}
+                  <span class="badge text-bg-success">Active</span>
+                {% else %}
+                  <span class="badge text-bg-secondary">Inactive</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="3" class="text-secondary">No students found.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 {% endblock %}

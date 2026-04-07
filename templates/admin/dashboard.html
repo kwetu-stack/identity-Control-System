@@ -2,24 +2,52 @@
 
 {% block title %}Admin Dashboard — Kwetu Identity Control{% endblock %}
 
+{% block page_title %}Admin dashboard{% endblock %}
+
 {% block content %}
-    <div class="card">
-        <h2 class="section-title">Admin Dashboard</h2>
+  <div class="row g-3">
+    <div class="col-12 col-lg-8">
+      <div class="surface p-4">
+        <div class="d-flex align-items-start justify-content-between">
+          <div>
+            <div class="h4 mb-1">System overview</div>
+            <div class="text-secondary">Manage the student directory and access credentials.</div>
+          </div>
+          <span class="badge badge-soft">Operational</span>
+        </div>
 
-        <p>System status: <strong>Operational</strong></p>
+        <hr class="text-secondary">
 
-        <h3>Student Management</h3>
-        <ul>
-            <li><a href="/admin/students">View Students</a></li>
-            <li><a href="/admin/students/add">Add Student</a></li>
-        </ul>
-
-        <h3>System</h3>
-        <ul>
-            <li>Manage Users (coming soon)</li>
-            <li>Manage Guards (coming soon)</li>
-            <li>Manage Devices (coming soon)</li>
-            <li>Audit Logs (coming soon)</li>
-        </ul>
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <div class="surface p-3">
+              <div class="fw-semibold mb-1">Student directory</div>
+              <div class="text-secondary small mb-3">Search, register, activate/deactivate, assign QR tokens.</div>
+              <a class="btn btn-outline-info" href="{{ url_for('list_students') }}">Open students</a>
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="surface p-3">
+              <div class="fw-semibold mb-1">QR token assignment</div>
+              <div class="text-secondary small mb-3">Assign missing QR tokens to students (safe in demo).</div>
+              <a class="btn btn-outline-info" href="{{ url_for('assign_qr_tokens') }}">Assign QR tokens</a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <div class="col-12 col-lg-4">
+      <div class="surface p-4">
+        <div class="h5 mb-2">Setup checklist</div>
+        <div class="text-secondary small mb-3">What makes the demo feel real.</div>
+        <ul class="mb-0">
+          <li>Students seeded</li>
+          <li>Guards available</li>
+          <li>Entry logs populated</li>
+          <li>Export working</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 {% endblock %}

@@ -2,32 +2,40 @@
 
 {% block title %}Add Student — Admin{% endblock %}
 
+{% block page_title %}Add student{% endblock %}
+
 {% block content %}
-    <h2>Add Student</h2>
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-7">
+      <div class="surface p-4">
+        <div class="h4 mb-1">Register a student</div>
+        <div class="text-secondary mb-3">Add a student to the directory and enable access verification.</div>
 
-    {% if error %}
-        <p style="color:red;">{{ error }}</p>
-    {% endif %}
+        {% if error %}
+          <div class="alert alert-danger" role="alert">{{ error }}</div>
+        {% endif %}
 
-    {% if success %}
-        <p style="color:green;">{{ success }}</p>
-    {% endif %}
+        {% if success %}
+          <div class="alert alert-success" role="alert">{{ success }}</div>
+        {% endif %}
 
-    <form method="post">
-        <div>
-            <label>Registration Number</label><br>
-            <input type="text" name="registration_number" required>
-        </div>
+        <form method="post">
+          <div class="mb-3">
+            <label class="form-label">Registration number</label>
+            <input class="form-control" type="text" name="registration_number" required placeholder="e.g. KWT/BSc/2024/00012">
+          </div>
 
-        <div>
-            <label>Full Name</label><br>
-            <input type="text" name="full_name" required>
-        </div>
+          <div class="mb-3">
+            <label class="form-label">Full name</label>
+            <input class="form-control" type="text" name="full_name" required placeholder="e.g. Amina Wanjiku">
+          </div>
 
-        <button type="submit">Add Student</button>
-    </form>
-
-    <p style="margin-top:20px;">
-        <a href="/admin">← Back to Dashboard</a>
-    </p>
+          <div class="d-flex gap-2">
+            <button class="btn btn-info fw-semibold" type="submit">Add student</button>
+            <a class="btn btn-outline-light" href="{{ url_for('list_students') }}">Back</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 {% endblock %}

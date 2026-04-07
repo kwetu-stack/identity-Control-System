@@ -2,54 +2,70 @@
 
 {% block title %}Management Dashboard — Kwetu Identity Control{% endblock %}
 
+{% block page_title %}Management dashboard{% endblock %}
+
 {% block content %}
-    <div class="card">
-        <h2 class="section-title">Management Dashboard</h2>
-
-        <p><strong>Overview:</strong> Hostel access monitoring</p>
-
-        <ul>
-            <li>
-                Total registered students:
-                <strong>{{ total_students }}</strong>
-            </li>
-            <li>
-                Entries today:
-                <strong>{{ entries_today }}</strong>
-            </li>
-            <li>
-                Allowed entries today:
-                <strong>{{ allowed_today }}</strong>
-            </li>
-            <li>
-                Denied entries today:
-                <strong>{{ denied_today }}</strong>
-            </li>
-        </ul>
-
-        <hr>
-
-        <h3>Access Monitoring</h3>
-        <ul>
-            <li>
-                <a href="{{ url_for('management_entry_logs') }}">
-                    View all entry logs (read-only)
-                </a>
-            </li>
-            <li>
-                <a href="{{ url_for('list_students') }}">
-                    View students → entry history
-                </a>
-            </li>
-        </ul>
-
-        <hr>
-
-        <h3>Reports (Coming Soon)</h3>
-        <ul>
-            <li>Daily access report</li>
-            <li>Incident log</li>
-            <li>Guard activity summary</li>
-        </ul>
+  <div class="row g-3">
+    <div class="col-12">
+      <div class="surface p-4">
+        <div class="d-flex align-items-start justify-content-between">
+          <div>
+            <div class="h4 mb-1">Access monitoring</div>
+            <div class="text-secondary">Real-time overview of student entry verification.</div>
+          </div>
+          <div class="d-flex gap-2">
+            <a class="btn btn-outline-light" href="{{ url_for('management_entry_logs') }}">Open entry logs</a>
+            <a class="btn btn-info fw-semibold" href="{{ url_for('export_entry_logs_csv') }}">Export CSV</a>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+      <div class="surface p-4">
+        <div class="text-secondary mb-1">Total students</div>
+        <div class="display-6 fw-semibold">{{ total_students }}</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-xl-3">
+      <div class="surface p-4">
+        <div class="text-secondary mb-1">Entries today</div>
+        <div class="display-6 fw-semibold">{{ entries_today }}</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-xl-3">
+      <div class="surface p-4">
+        <div class="text-secondary mb-1">Allowed today</div>
+        <div class="display-6 fw-semibold text-success">{{ allowed_today }}</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-xl-3">
+      <div class="surface p-4">
+        <div class="text-secondary mb-1">Denied today</div>
+        <div class="display-6 fw-semibold text-danger">{{ denied_today }}</div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-7">
+      <div class="surface p-4">
+        <div class="h5 mb-2">Monitoring shortcuts</div>
+        <div class="text-secondary mb-3">Common actions for duty managers.</div>
+        <div class="d-flex flex-wrap gap-2">
+          <a class="btn btn-outline-info" href="{{ url_for('management_entry_logs') }}">Review latest logs</a>
+          <a class="btn btn-outline-info" href="{{ url_for('export_entry_logs_csv') }}">Download CSV report</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-5">
+      <div class="surface p-4">
+        <div class="h5 mb-2">What to look for</div>
+        <ul class="mb-0 text-secondary">
+          <li>Repeated denials (possible tailgating / impersonation)</li>
+          <li>Inactive student attempts</li>
+          <li>High traffic windows (evening hostel entry)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 {% endblock %}

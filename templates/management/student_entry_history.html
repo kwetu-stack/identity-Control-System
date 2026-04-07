@@ -2,36 +2,52 @@
 
 {% block title %}Student Entry History{% endblock %}
 
+{% block page_title %}Student history{% endblock %}
+
 {% block content %}
-<h2>Student Entry History</h2>
+  <div class="surface p-4 mb-3">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+      <div>
+        <div class="h4 mb-1">{{ student.full_name }}</div>
+        <div class="text-secondary">{{ student.registration_number }}</div>
+      </div>
+      <a class="btn btn-outline-light" href="{{ url_for('management_entry_logs') }}">Back to entry logs</a>
+    </div>
+  </div>
 
-<p>
-    <strong>Name:</strong> {{ student.full_name }}<br>
-    <strong>Registration Number:</strong> {{ student.registration_number }}
-</p>
-
-<table border="1" cellpadding="6" cellspacing="0">
-    <tr>
-        <th>Date / Time (UTC)</th>
-        <th>Result</th>
-        <th>Reason</th>
-        <th>Guard ID</th>
-    </tr>
-
-    {% for log in logs %}
-    <tr>
-        <td>{{ log.created_at.strftime("%d %b %Y, %H:%M:%S") }}</td>
-        <td>{{ log.result }}</td>
-        <td>{{ log.reason }}</td>
-        <td>{{ log.guard_id }}</td>
-    </tr>
-    {% else %}
-    <tr>
-        <td colspan="4">No entry records for this student.</td>
-    </tr>
-    {% endfor %}
-</table>
-
-<br>
-<a href="/management/entry-logs">← Back to Entry Logs</a>
+  <div class="surface p-4">
+    <div class="h5 mb-3">Access history</div>
+    <div class="table-responsive">
+      <table class="table table-dark table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Date / time (UTC)</th>
+            <th>Result</th>
+            <th>Reason</th>
+            <th>Guard</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in logs %}
+            <tr>
+              <td class="text-secondary">{{ log.created_at.strftime("%d %b %Y, %H:%M:%S") }}</td>
+              <td>
+                {% if log.result == 'allowed' %}
+                  <span class="badge text-bg-success">Allowed</span>
+                {% else %}
+                  <span class="badge text-bg-danger">Denied</span>
+                {% endif %}
+              </td>
+              <td class="text-secondary">{{ log.reason }}</td>
+              <td class="text-secondary">#{{ log.guard_id }}</td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="4" class="text-secondary">No entry records for this student.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 {% endblock %}
