@@ -1,5 +1,5 @@
 import os
-from flask import Flask, Response, flash, redirect, render_template, request, session, url_for
+from flask import Flask, Response, flash, redirect, render_template, request, session, url_for, jsonify
 from flask_login import (
     LoginManager, login_required, login_user, logout_user, current_user
 )
@@ -48,6 +48,25 @@ def describe_database_backend(uri: str) -> str:
     if lowered.startswith("mysql:"):
         return "mysql"
     return lowered.split(":", 1)[0]
+
+
+def get_db_status_payload(app):
+    db_uri = app.config.get("SQLALCHEMY_DATABASE_URI", "")
+    return {
+        "demo_mode": DEMO_MODE,
+        "environment": app.config.get("ENV"),
+        "database_backend": describe_database_backend(db_uri),
+        "has_database_url": bool(
+            os.getenv("DATABASE_URL")
+            or os.getenv("DATABASE_PRIVATE_URL")
+            or os.getenv("DATABASE_PUBLIC_URL")
+            or os.getenv("POSTGRES_URL")
+            or os.getenv("POSTGRESQL_URL")
+        ),
+        "users_count": User.query.count(),
+        "students_count": Student.query.count(),
+        "entry_logs_count": EntryLog.query.count(),
+    }
 
 
 login_manager = LoginManager()
@@ -615,6 +634,10 @@ def create_app():
         db.session.commit()
 
         return redirect(url_for("admin_dashboard"))
+
+    @app.route("/debug/db-status")
+    def debug_db_status():
+        return jsonify(get_db_status_payload(app))
 
     return app
 
