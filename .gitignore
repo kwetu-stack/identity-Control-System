@@ -11,6 +11,7 @@ __pycache__/
 # Database
 *.sqlite3
 *.db
+!identity_control.db
 
 
 # Logs
