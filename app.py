@@ -639,6 +639,10 @@ def create_app():
     def debug_db_status():
         return jsonify(get_db_status_payload(app))
 
+    @app.route("/healthz")
+    def healthz():
+        return Response("ok", mimetype="text/plain")
+
     return app
 
 app = create_app()
