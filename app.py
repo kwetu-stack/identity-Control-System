@@ -13,6 +13,7 @@ from core.db import db
 from core.security import role_required
 from models.student import Student
 from models.entry_log import EntryLog
+from core.seed import seed_demo_data
 from datetime import datetime, timedelta, timezone, date
 from config.settings import MIN_REENTRY_MINUTES
 from sqlalchemy import or_
@@ -82,6 +83,13 @@ def create_app():
             db.session.add_all([admin, guard, manager])
             db.session.commit()
         # --------------------------------------------
+
+        if not is_demo():
+            created_students, created_logs = seed_demo_data()
+            if created_students or created_logs:
+                app.logger.info(
+                    f"Seeded empty deployment database with {created_students} students and {created_logs} logs."
+                )
 
     # Login manager
     login_manager.init_app(app)
