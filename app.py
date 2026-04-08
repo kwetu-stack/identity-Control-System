@@ -5,7 +5,7 @@ from flask_login import (
 )
 import csv
 from io import StringIO
-from config.settings import DevelopmentConfig
+from config.settings import DevelopmentConfig, ProductionConfig
 from models.user import User
 from core.security import ALL_ROLES, ROLE_ADMIN, ROLE_GUARD, ROLE_MANAGEMENT
 from werkzeug.security import check_password_hash
@@ -24,6 +24,30 @@ DEMO_MODE = os.getenv("DEMO_MODE", "true").lower() == "true"
 
 def is_demo():
     return DEMO_MODE
+
+
+def get_config_class():
+    app_env = (
+        os.getenv("APP_ENV")
+        or os.getenv("FLASK_ENV")
+        or ("production" if os.getenv("RAILWAY_ENVIRONMENT_NAME") else "development")
+    ).lower()
+    if app_env == "production":
+        return ProductionConfig
+    return DevelopmentConfig
+
+
+def describe_database_backend(uri: str) -> str:
+    if not uri:
+        return "unknown"
+    lowered = uri.lower()
+    if lowered.startswith("sqlite:"):
+        return "sqlite"
+    if lowered.startswith("postgresql:"):
+        return "postgresql"
+    if lowered.startswith("mysql:"):
+        return "mysql"
+    return lowered.split(":", 1)[0]
 
 
 login_manager = LoginManager()
@@ -52,13 +76,20 @@ def get_demo_user():
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(DevelopmentConfig)
+    app.config.from_object(get_config_class())
     app.config["DEMO_MODE"] = DEMO_MODE
     app.jinja_env.globals["is_demo"] = is_demo
 
     # DB init
     db.init_app(app)
     with app.app_context():
+        db_uri = app.config.get("SQLALCHEMY_DATABASE_URI", "")
+        app.logger.info(
+            "Starting app with DEMO_MODE=%s, ENV=%s, database_backend=%s",
+            DEMO_MODE,
+            app.config.get("ENV"),
+            describe_database_backend(db_uri),
+        )
         db.create_all()
         from werkzeug.security import generate_password_hash
 
@@ -90,6 +121,12 @@ def create_app():
                 app.logger.info(
                     f"Seeded empty deployment database with {created_students} students and {created_logs} logs."
                 )
+            else:
+                app.logger.info(
+                    "Seed skipped because students already exist in the configured database."
+                )
+        else:
+            app.logger.info("Demo mode is enabled; persistent startup seed is disabled.")
 
     # Login manager
     login_manager.init_app(app)
